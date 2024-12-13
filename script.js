@@ -4,70 +4,152 @@ AOS.init({
     once: true
 });
 
-// 轮播图功能
-const slider = {
-    slides: document.querySelectorAll('.slide'),
-    currentSlide: 0,
-    autoPlayInterval: null,
-    
+// 图片和视频预览功能
+const mediaPreview = {
+    modal: document.getElementById('imageModal'),
+    modalImg: document.getElementById('modalImage'),
+    modalCaption: document.querySelector('.modal-caption'),
+    closeBtn: document.querySelector('.modal-close'),
+    prevBtn: document.querySelector('.prev-btn'),
+    nextBtn: document.querySelector('.next-btn'),
+    galleryItems: document.querySelectorAll('.gallery-item'),
+    currentIndex: 0,
+    videoPlaying: false,
+
     init() {
-        // 创建轮播点
-        const dotsContainer = document.querySelector('.slider-dots');
-        this.slides.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            if (index === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => this.goToSlide(index));
-            dotsContainer.appendChild(dot);
+        // 为每个媒体项添加点击事件
+        this.galleryItems.forEach((item, index) => {
+            if (item.classList.contains('video-item')) {
+                const video = item.querySelector('video');
+                const playButton = item.querySelector('.play-button');
+                const caption = item.querySelector('.gallery-caption').innerHTML;
+                
+                playButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.currentIndex = index;
+                    this.openVideoModal(video, caption);
+                });
+
+                video.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.currentIndex = index;
+                    this.openVideoModal(video, caption);
+                });
+            } else {
+                const img = item.querySelector('img');
+                const caption = item.querySelector('.gallery-caption').innerHTML;
+                
+                item.addEventListener('click', () => {
+                    this.currentIndex = index;
+                    this.openImageModal(img.src, caption);
+                });
+            }
         });
+
+        // 关闭按钮事件
+        this.closeBtn.addEventListener('click', () => this.closeModal());
         
-        // 添加按钮事件监听
-        document.querySelector('.prev').addEventListener('click', () => this.prevSlide());
-        document.querySelector('.next').addEventListener('click', () => this.nextSlide());
-        
-        // 鼠标悬停暂停自动播放
-        const sliderContainer = document.querySelector('.slider-container');
-        sliderContainer.addEventListener('mouseenter', () => this.pauseAutoPlay());
-        sliderContainer.addEventListener('mouseleave', () => this.startAutoPlay());
-        
-        // 开始自动播放
-        this.startAutoPlay();
-    },
-    
-    showSlide(index) {
-        // 更新轮播点状态
-        document.querySelectorAll('.dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === index);
+        // 点击模态框背景关闭
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal || (!this.videoPlaying && e.target === this.modalImg)) {
+                this.closeModal();
+            }
         });
-        
-        // 更新幻灯片状态
-        this.slides.forEach((slide, i) => {
-            slide.classList.toggle('active', i === index);
+
+        // 上一张/下一张按钮事件
+        this.prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.showPrevItem();
         });
+        this.nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.showNextItem();
+        });
+
+        // 键盘事件
+        document.addEventListener('keydown', (e) => {
+            if (!this.modal.classList.contains('active')) return;
+            
+            switch(e.key) {
+                case 'Escape':
+                    this.closeModal();
+                    break;
+                case 'ArrowLeft':
+                    this.showPrevItem();
+                    break;
+                case 'ArrowRight':
+                    this.showNextItem();
+                    break;
+            }
+        });
+    },
+
+    openImageModal(src, caption) {
+        this.videoPlaying = false;
+        this.modal.classList.remove('video-modal');
+        this.modalImg.style.display = 'block';
+        if (this.modal.querySelector('video')) {
+            this.modal.querySelector('video').remove();
+        }
+        this.modalImg.src = src;
+        this.modalCaption.innerHTML = caption;
+        this.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    },
+
+    openVideoModal(videoElement, caption) {
+        this.videoPlaying = true;
+        this.modal.classList.add('video-modal');
+        this.modalImg.style.display = 'none';
         
-        this.currentSlide = index;
+        if (this.modal.querySelector('video')) {
+            this.modal.querySelector('video').remove();
+        }
+        
+        const videoClone = videoElement.cloneNode(true);
+        videoClone.controls = true;
+        videoClone.autoplay = true;
+        this.modalImg.insertAdjacentElement('afterend', videoClone);
+        
+        this.modalCaption.innerHTML = caption;
+        this.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
     },
-    
-    nextSlide() {
-        const next = (this.currentSlide + 1) % this.slides.length;
-        this.showSlide(next);
+
+    closeModal() {
+        if (this.videoPlaying) {
+            const video = this.modal.querySelector('video');
+            if (video) {
+                video.pause();
+                video.remove();
+            }
+        }
+        this.modal.classList.remove('active', 'video-modal');
+        this.videoPlaying = false;
+        document.body.style.overflow = '';
     },
-    
-    prevSlide() {
-        const prev = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
-        this.showSlide(prev);
+
+    showPrevItem() {
+        this.currentIndex = (this.currentIndex - 1 + this.galleryItems.length) % this.galleryItems.length;
+        this.showCurrentItem();
     },
-    
-    goToSlide(index) {
-        this.showSlide(index);
+
+    showNextItem() {
+        this.currentIndex = (this.currentIndex + 1) % this.galleryItems.length;
+        this.showCurrentItem();
     },
-    
-    startAutoPlay() {
-        this.autoPlayInterval = setInterval(() => this.nextSlide(), 5000);
-    },
-    
-    pauseAutoPlay() {
-        clearInterval(this.autoPlayInterval);
+
+    showCurrentItem() {
+        const currentItem = this.galleryItems[this.currentIndex];
+        const caption = currentItem.querySelector('.gallery-caption').innerHTML;
+        
+        if (currentItem.classList.contains('video-item')) {
+            const video = currentItem.querySelector('video');
+            this.openVideoModal(video, caption);
+        } else {
+            const img = currentItem.querySelector('img');
+            this.openImageModal(img.src, caption);
+        }
     }
 };
 
@@ -96,35 +178,8 @@ const backToTop = {
     }
 };
 
-// 表单提交处理
-const contactForm = {
-    form: document.getElementById('contactForm'),
-    
-    init() {
-        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-    },
-    
-    handleSubmit(e) {
-        e.preventDefault();
-        
-        // 获取表单数据
-        const formData = new FormData(this.form);
-        const data = Object.fromEntries(formData.entries());
-        
-        // 这里可以添加表单提交逻辑
-        console.log('Form submitted:', data);
-        
-        // 清空表单
-        this.form.reset();
-        
-        // 显示成功消息
-        alert('消息已发送！');
-    }
-};
-
 // 初始化所有功能
 document.addEventListener('DOMContentLoaded', () => {
-    slider.init();
+    mediaPreview.init();
     backToTop.init();
-    contactForm.init();
 }); 

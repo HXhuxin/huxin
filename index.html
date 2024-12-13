@@ -44,52 +44,61 @@
         </div>
     </section>
 
-    <!-- 照片轮播区 -->
+    <!-- 照片展示区 -->
     <section id="gallery" class="gallery" data-aos="fade-up">
         <div class="container">
             <h2 class="section-title">我的作品</h2>
-            <div class="slider-container">
-                <div class="slider">
-                    <div class="slide active">
-                        <img src="https://via.placeholder.com/800x400" alt="作品1">
-                        <div class="slide-caption">作品展示1</div>
+            <div class="gallery-grid">
+                <div class="gallery-item video-item">
+                    <video src="imgs/b2c896c81d16c0cab49accb69bf43e05.mp4" 
+                           poster="imgs/DSC_0821.JPG"
+                           preload="metadata">
+                        <source src="imgs/b2c896c81d16c0cab49accb69bf43e05.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
                     </div>
-                    <div class="slide">
-                        <img src="https://via.placeholder.com/800x400" alt="作品2">
-                        <div class="slide-caption">作品展示2</div>
-                    </div>
-                    <div class="slide">
-                        <img src="https://via.placeholder.com/800x400" alt="作品3">
-                        <div class="slide-caption">作品展示3</div>
+                    <div class="gallery-caption">
+                        <h3>视频作品</h3>
+                        <p>点击播放视频</p>
                     </div>
                 </div>
-                <button class="slider-btn prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="slider-btn next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <div class="slider-dots"></div>
+                <div class="gallery-item">
+                    <img src="imgs/DSC_0821.JPG" alt="作品展示 - 摄影作品1">
+                    <div class="gallery-caption">
+                        <h3>摄影作品1</h3>
+                        <p>自然光影的完美捕捉</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/DSC_0806.JPG" alt="作品展示 - 摄影作品2">
+                    <div class="gallery-caption">
+                        <h3>摄影作品2</h3>
+                        <p>光与影的交织</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/DSC_0797.JPG" alt="作品展示 - 摄影作品3">
+                    <div class="gallery-caption">
+                        <h3>摄影作品3</h3>
+                        <p>瞬间的永恒</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/DSC_0793.JPG" alt="作品展示 - 摄影作品4">
+                    <div class="gallery-caption">
+                        <h3>摄影作品4</h3>
+                        <p>独特视角的呈现</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="imgs/DSC_0789.JPG" alt="作品展示 - 摄影作品5">
+                    <div class="gallery-caption">
+                        <h3>摄影作品5</h3>
+                        <p>色彩与构图的完美融合</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
-
-    <!-- 联系表单 -->
-    <section id="contact" class="contact" data-aos="fade-up">
-        <div class="container">
-            <h2 class="section-title">联系我</h2>
-            <form class="contact-form" id="contactForm">
-                <div class="form-group">
-                    <input type="text" id="name" name="name" required placeholder="您的姓名">
-                </div>
-                <div class="form-group">
-                    <input type="email" id="email" name="email" required placeholder="您的邮箱">
-                </div>
-                <div class="form-group">
-                    <textarea id="message" name="message" required placeholder="您的留言"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">发送消息</button>
-            </form>
         </div>
     </section>
 
@@ -97,25 +106,31 @@
     <footer class="footer">
         <div class="container">
             <div class="social-links">
-                <a href="#" class="social-link" title="抖音">
+                <a href="https://v.douyin.com/iUjPSc2F/" class="social-link" title="抖音" target="_blank">
                     <i class="fab fa-tiktok"></i>
                 </a>
-                <a href="#" class="social-link" title="哔哩哔哩">
+                <a href="https://b23.tv/VNpJxy4" class="social-link" title="哔哩哔哩" target="_blank">
                     <i class="fab fa-bilibili"></i>
                 </a>
-                <a href="#" class="social-link" title="快手">
+                <a href="https://v.kuaishou.com/bd16Nv" class="social-link" title="快手" target="_blank">
                     <i class="fas fa-video"></i>
                 </a>
-                <a href="#" class="social-link" title="小红书">
+                <a href="https://www.xiaohongshu.com/user/profile/62276a050000000010009ab8" class="social-link" title="小红书" target="_blank">
                     <i class="fas fa-book"></i>
-                </a>
-                <a href="#" class="social-link" title="QQ">
-                    <i class="fab fa-qq"></i>
                 </a>
             </div>
             <p class="copyright">© 2024 Huxin | 保留所有权利</p>
         </div>
     </footer>
+
+    <!-- 图片预览模态框 -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption"></div>
+        <button class="modal-nav prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="modal-nav next-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
 
     <!-- 返回顶部按钮 -->
     <button id="backToTop" class="back-to-top">
